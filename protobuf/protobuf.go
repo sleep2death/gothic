@@ -10,9 +10,8 @@ import (
 	"github.com/sleep2death/gothic"
 )
 
-var (
-	opened int
-)
+var opened int
+var pdata func(c gothic.Conn, in []byte) (out []byte, err error)
 
 // Serve ...
 func Serve(addr string) {
@@ -61,6 +60,8 @@ func Serve(addr string) {
 
 				if len(body) >= int(fh.Length) {
 					log.Printf("expect len: %d, actual len:%d, data: %s", fh.Length, len(data), string(body[:fh.Length]))
+					if pdata != nil {
+					}
 					// ctx.is.End(data[fh.Length:])
 					data = body[fh.Length:]
 					if len(data) > 0 {
@@ -281,10 +282,10 @@ func newContext() *context {
 func putContext(ctx *context) {
 	// reset context
 	ctx.is.b = nil
-
 	ctx.fh.Length = 0
 	ctx.fh.Flags = 0
 	ctx.fh.Type = 0
 
+	// put context back to the pool
 	ctxPool.Put(ctx)
 }

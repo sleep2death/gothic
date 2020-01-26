@@ -1,0 +1,12 @@
+syntax ="proto3";
+package pb;
+
+import "google/protobuf/any.proto";
+
+message AnyMsg {
+    google.protobuf.Any any = 1;
+}
+
+message EchoMsg {
+    string message = 1;
+}

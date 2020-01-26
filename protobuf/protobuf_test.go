@@ -4,6 +4,8 @@ import "testing"
 
 import "time"
 import "net"
+import "github.com/sleep2death/gothic/protobuf/pb"
+import "github.com/golang/protobuf/proto"
 
 func TestServe(t *testing.T) {
 	go Serve(":9001")
@@ -16,7 +18,7 @@ func TestServe(t *testing.T) {
 
 	// send two frames together
 	aframe, _ := WriteData([]byte("hello"))
-	bframe, _ := WriteData([]byte("hello Again"))
+	bframe, _ := WriteData([]byte("hello again"))
 
 	conn.Write(append(aframe, bframe...))
 
@@ -68,4 +70,9 @@ func TestServe(t *testing.T) {
 	cframe, _ := WriteData([]byte("bye"))
 	conn.Write(cframe)
 	time.Sleep(time.Millisecond * 5)
+
+	// protobuf
+	echo := &pb.EchoMsg{
+		Message: "Hello",
+	}
 }
