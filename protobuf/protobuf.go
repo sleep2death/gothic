@@ -1,18 +1,19 @@
 package protobuf
 
 import (
+	"log"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/sleep2death/gothic"
-	"log"
 )
 
 var opened int
-var pdata func(c gothic.Conn, in []byte) (out []byte, err error)
+
+// var pdata func(c gothic.Conn, in []byte) (out []byte, err error)
 
 // Serve ...
 func Serve(addr string) {
 	var events gothic.Events
-
 	events.Serving = func(s gothic.Server) (action gothic.Action) {
 		log.Println("[gothic protobuf server started]")
 		return
@@ -26,6 +27,7 @@ func Serve(addr string) {
 
 	events.Closed = func(c gothic.Conn) (action gothic.Action) {
 		opened--
+		putContext(c.Context().(*Context))
 		return
 	}
 
@@ -66,7 +68,11 @@ func Serve(addr string) {
 					}
 
 					ctx.ReqMsg = msg.GetAny()
-					ServeProto(ctx)
+					err = ServeProto(ctx)
+					if err != nil {
+						// TODO: write error to out
+						return nil, gothic.Close
+					}
 
 					data = body[fh.Length:]
 					if len(data) > 0 {
@@ -96,5 +102,6 @@ func Serve(addr string) {
 
 // ServeProto of the incoming message
 // a shortcut for unit testing
-func ServeProto(c *Context) {
+func ServeProto(c *Context) error {
+	return nil
 }

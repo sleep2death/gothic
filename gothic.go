@@ -356,8 +356,7 @@ var pb = sync.Pool{
 	},
 }
 
-// conn pool
-
+// connection pool
 var connPool sync.Pool
 
 func newConn(fd int, sa syscall.Sockaddr, p *poll, saddr int, laddr net.Addr) *conn {
